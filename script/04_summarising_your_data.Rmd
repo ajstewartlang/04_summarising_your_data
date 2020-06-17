@@ -1,0 +1,152 @@
+---
+title: "Summarising Your Data"
+author: "Andrew Stewart, Email: drandrewjstewart@gmail.com, Twitter: @ajstewart_lang"
+date: ""
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+Once a dataset has been tidied, often one of the first things we want to do is generate summary statistics. In the `mpg` dataset that is built into the `Tidyverse`, how would be go about generating (e.g.) the means and standard deviations grouped by car manufacturer for one of our variables? Have a look at the following video where I walk you through this worksheet. Then I want you to work through the content by writing (and running) the script on your own machine.
+
+&nbsp;&nbsp;
+
+[Link to YouTube talk here]
+
+&nbsp;&nbsp;
+
+First well work out the average highway fuel economy (measured in the `hwy` column) for each car manufacturer. Then we'll  work out how many of each manufacturer there are using the `n()` function.
+
+Remember to set up a .Rproj file for this workshop before continuing. In your script, you'll first need to load the tidyverse. 
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+# Using `group_by()` and `summarise()`
+
+We are going to use the `group_by()` function to group the dataset, and then the `summarise()` function to calculate the mean of hte `hwy` variable. The `summarise()` function can take a lot of different functions to give us summary statistics. To read more about the different options, type `?summarise` in the Console window. Commonly used ones are `mean()`, `median()`, `sd()`.
+
+```{r}
+mpg %>%
+  group_by(manufacturer) %>%
+  summarise(mean_hwy = mean(hwy), number = n())
+```
+Note that this output is currently ordered alphabetically by the first column `manufacturer`. What if we wanted to order this out by mean highway fuel economy highest (best) to lowest (worst)? We can use the arrange function.
+
+## Re-ordering the output with `arrange()`
+
+```{r}
+mpg %>%
+  group_by(manufacturer) %>%
+  summarise(mean_hwy = mean(hwy), number = n()) %>%
+  arrange(mean_hwy)
+```
+
+Hmm, so that isn't what we want - this is going from lowest to highest which is the default in R. We can change that by putting a `-` sign in from of the parameter we can to order by.
+
+```{r}
+mpg %>%
+  group_by(manufacturer) %>%
+  summarise(mean_hwy = mean(hwy), number = n()) %>%
+  arrange(- mean_hwy)
+```
+
+This is looking better.
+
+## The `summarise_at()` variant
+
+As well as using `summarise()`, you can use related functions such as `summarise_at()`. This is a scoped version of the `summarise()` function that can be applied across multiple columns. Note, when using `summarise_at()` you need to put the columns you want to summarise over in quotes. You also need to provide the summary function - in this case `mean`. Finally, in case our dataset contains any missing values (indicated by `NA`), we set the parameter `na.rm = TRUE`. This will ensure that missing data points are removed before the operation is applied. If we had missing data, but didn't tell R what we wanted to do with it, it would have thrown an error. 
+
+```{r}
+mpg %>% 
+  group_by(manufacturer) %>%
+  summarise_at(c("displ", "cty", "hwy"), mean, na.rm = TRUE)
+```
+
+## The `summarise_if()` variant
+
+Imagine we had a really big dataset and wanted to summarise all columns that were of a certain type. We can use the `summarise_if()` function to work out the mean for each of our car manufactures as follows:
+
+```{r}
+mpg %>% 
+  group_by(manufacturer) %>%
+  summarise_if(is.numeric, mean, na.rm = TRUE)
+```
+
+The first parameter in `summarise_if()` is the logical test applied to each column - in this case, if a column is numeric (i.e., a number) - then the test evaluates to TRUE and the second function, `mean`, is applied. Again, we tell R to ignore missing (`NA`) data values with the `na.rm = TRUE` parameter. 
+
+R functions differ in terms of what arguments they take. I often forget them - if you start typing a function name, you'll get a little bubble above where you're typing to remind you what parameters are needed. And if you can't remember the details, you can just type `help(function_name)` or `?function_name` in the console for any function that you need help with. A lot of data analysis with R (or Python or wny other language really) involves a fair bit of Googling. This is normal. There are some things I can never remember and am always having to look up!
+
+# Adding columns using `mutate()`
+
+We can add a new column that I'm calling `mean_hwy` using the `mutate()` function like this.
+
+```{r}
+mpg %>% 
+  group_by(manufacturer) %>%
+  mutate(mean_hwy = mean(hwy))
+```
+
+We have too many columns to display on this page so we can drop a coouple by using the `select()` function slightly differently. By putting a `-` sign in front of a column names in `select()` we end up dropping it.
+
+```{r}
+mpg %>% 
+  group_by(manufacturer) %>%
+  mutate(mean_hwy = mean(hwy)) %>%
+  select(- class, trans)
+```
+
+Note that this doesn't change the `mpg` dataset permanently - the changes won't be saved unless we map the output of this code onto a new variable. Below I am doing this by using the assignment operator `<-` to map it onto a new variable I'm calling `mpg_with_mean`. Note that we remove the grouping at the end as we don't want our grouping rule to remain in our new data frame.
+
+```{r}
+mpg_with_mean <- mpg %>% 
+  group_by(manufacturer) %>%
+  mutate(mean_hwy = mean(hwy)) %>%
+  ungroup() %>%
+  select(- class) 
+```
+
+We can then inspect this new variable using `head()` and `str()`.
+
+```{r}
+head(mpg_with_mean)
+```
+
+```{r}
+str(mpg_with_mean)
+```
+
+Wouldn't it be great if we could also visualize the entire dataset? We can use the function `vis_dat()` from the packages `visdat::` to do just that.
+
+```{r}
+library(visdat)
+vis_dat(mpg_with_mean)
+```
+
+Note, our variables (i.e., the columns in our dataset) are vectors (sequences of data elements) that include type `character`, `integer`, or `numeric`. Vectors of type `integer` are whole numbers. You can think of integer vectors as being a subset of numeric vectors.
+
+# Your challenge
+
+The `Tidyverse` has a number of other built-in data sets. Another one is the `starwars` data set. You can have a look at it by typing `starwars` or by typing `view(starwars)`. This second option will open the data set in a new window. Have a go playing around with it. Work out the mean height of humans in the Star Wars universe. There might be some missing data (indicated by `NA`). You can use the `na.rm = TRUE` parameter in your `summarise()` function to ignore these values when generating your summary statistics. 
+
+Another way to filter out `NA` values is to use the `filter()` function in your pipeline. The function `is.na()` returns a logical value of TRUE of FALSE. The operator `!` means NOT, so the expression `!is.na(height)` will return TRUE when the height value is present, and FALSE if absent. By combining this with `filter()` we have the line `filter(!is.na(height))` which will filter only the cases where we have height data (i.e., `!is.na(height)` is TRUE). So your code might look like this:
+
+```{r, eval=FALSE}
+starwars %>%
+  filter(!is.na(height)) %>%
+  filter(species == "Human") %>%
+  summarise(mean_height = mean(height))
+```
+
+Replace the word `mean` in the `summarise()` line with `median`. What other things can you replace it with? Hint: type `?summarise` in the console.  What other summary information can you extract from this dataset?
+
+
