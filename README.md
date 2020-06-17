@@ -1,2 +1,3 @@
-# 04_summarising_your_data
+# Workshop on Summarising your Data
  
+You can launch the workshop by clicking [here](https://ajstewartlang.github.io/04_summarising_your_data/).
