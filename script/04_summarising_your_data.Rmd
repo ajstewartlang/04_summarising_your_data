@@ -15,11 +15,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Overview
 
-Once a dataset has been tidied, often one of the first things we want to do is generate summary statistics. We'll be using the `mpg` dataset that is built into the `Tidyverse` for this workshop. This dataset contains information about cars (such as engine size, fuel economy) produced by a number of different manufacturers. How would be go about generating (e.g.) the means and standard deviations grouped by car manufacturer for one of our variables? Have a look at the following video where I walk you through this worksheet. Then I want you to work through the content by writing (and running) the script on your own machine.
+Once a dataset has been tidied, often one of the first things we want to do is generate summary statistics. We'll be using the `mpg` dataset that is built into the `tidyverse` for this workshop. This dataset contains information about cars (such as engine size, fuel economy) produced by a number of different manufacturers. How would be go about generating (e.g.) the means and standard deviations grouped by car manufacturer for one of our variables? Have a look at the following video where I walk you through this worksheet. Then I want you to work through the content by writing (and running) the script on your own machine.
 
 &nbsp;&nbsp;
 
-[Link to YouTube talk here]
+<center>
+
+<iframe width="560" height="315" src="https://youtube.com/embed/8P3E-lY15a8" frameborder="0" allowfullscreen></iframe>
+
+</center>
 
 &nbsp;&nbsp;
 
@@ -100,7 +104,7 @@ We have too many columns to display on this page so we can drop a coouple by usi
 mpg %>% 
   group_by(manufacturer) %>%
   mutate(mean_hwy = mean(hwy)) %>%
-  select(- class, trans)
+  select(- class, - trans)
 ```
 
 Note that this doesn't change the `mpg` dataset permanently - the changes won't be saved unless we map the output of this code onto a new variable. Below I am doing this by using the assignment operator `<-` to map it onto a new variable I'm calling `mpg_with_mean`. Note that we remove the grouping at the end as we don't want our grouping rule to remain in our new data frame.

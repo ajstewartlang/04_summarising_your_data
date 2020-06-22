@@ -1548,9 +1548,12 @@ div.tocify {
 
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>Once a dataset has been tidied, often one of the first things we want to do is generate summary statistics. We’ll be using the <code>mpg</code> dataset that is built into the <code>Tidyverse</code> for this workshop. This dataset contains information about cars (such as engine size, fuel economy) produced by a number of different manufacturers. How would be go about generating (e.g.) the means and standard deviations grouped by car manufacturer for one of our variables? Have a look at the following video where I walk you through this worksheet. Then I want you to work through the content by writing (and running) the script on your own machine.</p>
+<p>Once a dataset has been tidied, often one of the first things we want to do is generate summary statistics. We’ll be using the <code>mpg</code> dataset that is built into the <code>tidyverse</code> for this workshop. This dataset contains information about cars (such as engine size, fuel economy) produced by a number of different manufacturers. How would be go about generating (e.g.) the means and standard deviations grouped by car manufacturer for one of our variables? Have a look at the following video where I walk you through this worksheet. Then I want you to work through the content by writing (and running) the script on your own machine.</p>
 <p>  </p>
-<p>[Link to YouTube talk here]</p>
+<center>
+<iframe width="560" height="315" src="https://youtube.com/embed/8P3E-lY15a8" frameborder="0" allowfullscreen>
+</iframe>
+</center>
 <p>  </p>
 <p>Remember to set up a .Rproj file for this workshop before continuing. In your script, you’ll first need to load the tidyverse.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
@@ -1710,21 +1713,21 @@ div.tocify {
 <pre class="r"><code>mpg %&gt;% 
   group_by(manufacturer) %&gt;%
   mutate(mean_hwy = mean(hwy)) %&gt;%
-  select(- class, trans)</code></pre>
-<pre><code>## # A tibble: 234 x 11
+  select(- class, - trans)</code></pre>
+<pre><code>## # A tibble: 234 x 10
 ## # Groups:   manufacturer [15]
-##    manufacturer model  displ  year   cyl trans  drv     cty   hwy fl    mean_hwy
-##    &lt;chr&gt;        &lt;chr&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;
-##  1 audi         a4       1.8  1999     4 auto(… f        18    29 p         26.4
-##  2 audi         a4       1.8  1999     4 manua… f        21    29 p         26.4
-##  3 audi         a4       2    2008     4 manua… f        20    31 p         26.4
-##  4 audi         a4       2    2008     4 auto(… f        21    30 p         26.4
-##  5 audi         a4       2.8  1999     6 auto(… f        16    26 p         26.4
-##  6 audi         a4       2.8  1999     6 manua… f        18    26 p         26.4
-##  7 audi         a4       3.1  2008     6 auto(… f        18    27 p         26.4
-##  8 audi         a4 qu…   1.8  1999     4 manua… 4        18    26 p         26.4
-##  9 audi         a4 qu…   1.8  1999     4 auto(… 4        16    25 p         26.4
-## 10 audi         a4 qu…   2    2008     4 manua… 4        20    28 p         26.4
+##    manufacturer model      displ  year   cyl drv     cty   hwy fl    mean_hwy
+##    &lt;chr&gt;        &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;
+##  1 audi         a4           1.8  1999     4 f        18    29 p         26.4
+##  2 audi         a4           1.8  1999     4 f        21    29 p         26.4
+##  3 audi         a4           2    2008     4 f        20    31 p         26.4
+##  4 audi         a4           2    2008     4 f        21    30 p         26.4
+##  5 audi         a4           2.8  1999     6 f        16    26 p         26.4
+##  6 audi         a4           2.8  1999     6 f        18    26 p         26.4
+##  7 audi         a4           3.1  2008     6 f        18    27 p         26.4
+##  8 audi         a4 quattro   1.8  1999     4 4        18    26 p         26.4
+##  9 audi         a4 quattro   1.8  1999     4 4        16    25 p         26.4
+## 10 audi         a4 quattro   2    2008     4 4        20    28 p         26.4
 ## # … with 224 more rows</code></pre>
 <p>Note that this doesn’t change the <code>mpg</code> dataset permanently - the changes won’t be saved unless we map the output of this code onto a new variable. Below I am doing this by using the assignment operator <code>&lt;-</code> to map it onto a new variable I’m calling <code>mpg_with_mean</code>. Note that we remove the grouping at the end as we don’t want our grouping rule to remain in our new data frame.</p>
 <pre class="r"><code>mpg_with_mean &lt;- mpg %&gt;% 
