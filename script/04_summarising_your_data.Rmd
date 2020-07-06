@@ -40,7 +40,7 @@ We are going to use the `group_by()` function to group the dataset, and then the
 ```{r}
 mpg %>%
   group_by(manufacturer) %>%
-  summarise(mean_hwy = mean(hwy), number = n())
+  summarise(mean_hwy = mean(hwy), sd_hwy = sd(hwy), number = n())
 ```
 Note that this output is currently ordered alphabetically by the first column `manufacturer`. What if we wanted to order this out by mean highway fuel economy highest (best) to lowest (worst)? We can use the arrange function.
 
@@ -49,7 +49,7 @@ Note that this output is currently ordered alphabetically by the first column `m
 ```{r}
 mpg %>%
   group_by(manufacturer) %>%
-  summarise(mean_hwy = mean(hwy), number = n()) %>%
+  summarise(mean_hwy = mean(hwy), sd_hwy = sd(hwy), number = n()) %>%
   arrange(mean_hwy)
 ```
 
@@ -58,7 +58,7 @@ Hmm, so that isn't what we want - this is going from lowest to highest which is 
 ```{r}
 mpg %>%
   group_by(manufacturer) %>%
-  summarise(mean_hwy = mean(hwy), number = n()) %>%
+  summarise(mean_hwy = mean(hwy), sd_hwy = sd(hwy), number = n()) %>%
   arrange(- mean_hwy)
 ```
 
@@ -95,7 +95,7 @@ We can add a new column that I'm calling `mean_hwy` using the `mutate()` functio
 ```{r}
 mpg %>% 
   group_by(manufacturer) %>%
-  mutate(mean_hwy = mean(hwy))
+  mutate(mean_hwy = mean(hwy), sd_hwy = sd(hwy))
 ```
 
 We have too many columns to display on this page so we can drop a coouple by using the `select()` function slightly differently. By putting a `-` sign in front of a column names in `select()` we end up dropping it.
@@ -103,8 +103,8 @@ We have too many columns to display on this page so we can drop a coouple by usi
 ```{r}
 mpg %>% 
   group_by(manufacturer) %>%
-  mutate(mean_hwy = mean(hwy)) %>%
-  select(- class, - trans)
+    mutate(mean_hwy = mean(hwy), sd_hwy = sd(hwy)) %>%
+  select(-class, -trans)
 ```
 
 Note that this doesn't change the `mpg` dataset permanently - the changes won't be saved unless we map the output of this code onto a new variable. Below I am doing this by using the assignment operator `<-` to map it onto a new variable I'm calling `mpg_with_mean`. Note that we remove the grouping at the end as we don't want our grouping rule to remain in our new data frame.
@@ -112,9 +112,9 @@ Note that this doesn't change the `mpg` dataset permanently - the changes won't 
 ```{r}
 mpg_with_mean <- mpg %>% 
   group_by(manufacturer) %>%
-  mutate(mean_hwy = mean(hwy)) %>%
+    mutate(mean_hwy = mean(hwy), sd_hyw = sd(hwy)) %>%
   ungroup() %>%
-  select(- class) 
+  select(-class) 
 ```
 
 We can then inspect this new variable using `head()` and `str()`.
@@ -126,15 +126,6 @@ head(mpg_with_mean)
 ```{r}
 str(mpg_with_mean)
 ```
-
-Wouldn't it be great if we could also visualize the entire dataset? We can use the function `vis_dat()` from the packages `visdat::` to do just that.
-
-```{r}
-library(visdat)
-vis_dat(mpg_with_mean)
-```
-
-Note, our variables (i.e., the columns in our dataset) are vectors (sequences of data elements) that include type `character`, `integer`, or `numeric`. Vectors of type `integer` are whole numbers. You can think of integer vectors as being a subset of numeric vectors.
 
 # Your challenge
 
