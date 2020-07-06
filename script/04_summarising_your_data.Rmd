@@ -35,7 +35,7 @@ library(tidyverse)
 
 # Using `group_by()` and `summarise()`
 
-We are going to use the `group_by()` function to group the dataset, and then the `summarise()` function to calculate the mean of hte `hwy` variable. The `summarise()` function can take a lot of different functions to give us summary statistics. To read more about the different options, type `?summarise` in the Console window. Commonly used ones are `mean()`, `median()`, `sd()`.
+We are going to use the `group_by()` function to group the dataset, and then the `summarise()` function to calculate the mean and sd of the `hwy` variable. The `summarise()` function can take a lot of different functions to give us summary statistics. To read more about the different options, type `?summarise` in the Console window. Commonly used ones are `mean()`, `median()`, `sd()`.
 
 ```{r}
 mpg %>%
@@ -59,7 +59,7 @@ Hmm, so that isn't what we want - this is going from lowest to highest which is 
 mpg %>%
   group_by(manufacturer) %>%
   summarise(mean_hwy = mean(hwy), sd_hwy = sd(hwy), number = n()) %>%
-  arrange(- mean_hwy)
+  arrange(-mean_hwy)
 ```
 
 This is looking better.
@@ -114,7 +114,7 @@ mpg_with_mean <- mpg %>%
   group_by(manufacturer) %>%
     mutate(mean_hwy = mean(hwy), sd_hyw = sd(hwy)) %>%
   ungroup() %>%
-  select(-class) 
+  select(-class, -trans) 
 ```
 
 We can then inspect this new variable using `head()` and `str()`.

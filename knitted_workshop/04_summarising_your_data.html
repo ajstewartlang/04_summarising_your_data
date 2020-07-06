@@ -1560,7 +1560,7 @@ div.tocify {
 </div>
 <div id="using-group_by-and-summarise" class="section level1">
 <h1>Using <code>group_by()</code> and <code>summarise()</code></h1>
-<p>We are going to use the <code>group_by()</code> function to group the dataset, and then the <code>summarise()</code> function to calculate the mean of hte <code>hwy</code> variable. The <code>summarise()</code> function can take a lot of different functions to give us summary statistics. To read more about the different options, type <code>?summarise</code> in the Console window. Commonly used ones are <code>mean()</code>, <code>median()</code>, <code>sd()</code>.</p>
+<p>We are going to use the <code>group_by()</code> function to group the dataset, and then the <code>summarise()</code> function to calculate the mean and sd of the <code>hwy</code> variable. The <code>summarise()</code> function can take a lot of different functions to give us summary statistics. To read more about the different options, type <code>?summarise</code> in the Console window. Commonly used ones are <code>mean()</code>, <code>median()</code>, <code>sd()</code>.</p>
 <pre class="r"><code>mpg %&gt;%
   group_by(manufacturer) %&gt;%
   summarise(mean_hwy = mean(hwy), sd_hwy = sd(hwy), number = n())</code></pre>
@@ -1613,7 +1613,7 @@ div.tocify {
 <pre class="r"><code>mpg %&gt;%
   group_by(manufacturer) %&gt;%
   summarise(mean_hwy = mean(hwy), sd_hwy = sd(hwy), number = n()) %&gt;%
-  arrange(- mean_hwy)</code></pre>
+  arrange(-mean_hwy)</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 15 x 4
 ##    manufacturer mean_hwy sd_hwy number
@@ -1734,27 +1734,25 @@ div.tocify {
   group_by(manufacturer) %&gt;%
     mutate(mean_hwy = mean(hwy), sd_hyw = sd(hwy)) %&gt;%
   ungroup() %&gt;%
-  select(-class) </code></pre>
+  select(-class, -trans) </code></pre>
 <p>We can then inspect this new variable using <code>head()</code> and <code>str()</code>.</p>
 <pre class="r"><code>head(mpg_with_mean)</code></pre>
-<pre><code>## # A tibble: 6 x 12
-##   manufacturer model displ  year   cyl trans drv     cty   hwy fl    mean_hwy
-##   &lt;chr&gt;        &lt;chr&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;
-## 1 audi         a4      1.8  1999     4 auto… f        18    29 p         26.4
-## 2 audi         a4      1.8  1999     4 manu… f        21    29 p         26.4
-## 3 audi         a4      2    2008     4 manu… f        20    31 p         26.4
-## 4 audi         a4      2    2008     4 auto… f        21    30 p         26.4
-## 5 audi         a4      2.8  1999     6 auto… f        16    26 p         26.4
-## 6 audi         a4      2.8  1999     6 manu… f        18    26 p         26.4
-## # … with 1 more variable: sd_hyw &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 6 x 11
+##   manufacturer model displ  year   cyl drv     cty   hwy fl    mean_hwy sd_hyw
+##   &lt;chr&gt;        &lt;chr&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+## 1 audi         a4      1.8  1999     4 f        18    29 p         26.4   2.18
+## 2 audi         a4      1.8  1999     4 f        21    29 p         26.4   2.18
+## 3 audi         a4      2    2008     4 f        20    31 p         26.4   2.18
+## 4 audi         a4      2    2008     4 f        21    30 p         26.4   2.18
+## 5 audi         a4      2.8  1999     6 f        16    26 p         26.4   2.18
+## 6 audi         a4      2.8  1999     6 f        18    26 p         26.4   2.18</code></pre>
 <pre class="r"><code>str(mpg_with_mean)</code></pre>
-<pre><code>## tibble [234 × 12] (S3: tbl_df/tbl/data.frame)
+<pre><code>## tibble [234 × 11] (S3: tbl_df/tbl/data.frame)
 ##  $ manufacturer: chr [1:234] &quot;audi&quot; &quot;audi&quot; &quot;audi&quot; &quot;audi&quot; ...
 ##  $ model       : chr [1:234] &quot;a4&quot; &quot;a4&quot; &quot;a4&quot; &quot;a4&quot; ...
 ##  $ displ       : num [1:234] 1.8 1.8 2 2 2.8 2.8 3.1 1.8 1.8 2 ...
 ##  $ year        : int [1:234] 1999 1999 2008 2008 1999 1999 2008 1999 1999 2008 ...
 ##  $ cyl         : int [1:234] 4 4 4 4 6 6 6 4 4 4 ...
-##  $ trans       : chr [1:234] &quot;auto(l5)&quot; &quot;manual(m5)&quot; &quot;manual(m6)&quot; &quot;auto(av)&quot; ...
 ##  $ drv         : chr [1:234] &quot;f&quot; &quot;f&quot; &quot;f&quot; &quot;f&quot; ...
 ##  $ cty         : int [1:234] 18 21 20 21 16 18 18 18 16 20 ...
 ##  $ hwy         : int [1:234] 29 29 31 30 26 26 27 26 25 28 ...
