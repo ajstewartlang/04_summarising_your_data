@@ -103,7 +103,7 @@ We have too many columns to display on this page so we can drop a coouple by usi
 ```{r}
 mpg %>% 
   group_by(manufacturer) %>%
-    mutate(mean_hwy = mean(hwy), sd_hwy = sd(hwy)) %>%
+  mutate(mean_hwy = mean(hwy), sd_hwy = sd(hwy)) %>%
   select(-class, -trans)
 ```
 
